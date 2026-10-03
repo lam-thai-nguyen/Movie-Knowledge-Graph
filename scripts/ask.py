@@ -59,11 +59,11 @@ def remote_query_with_local_links(query, links_path, target):
 def main():
     parser = argparse.ArgumentParser(description="Interactive SPARQL CLI using rdflib")
     parser.add_argument("--rdf", help="Path to RDF file", default="output/movies.ttl")
-    parser.add_argument("--ontology", help="Path to OWL ontology", default="ontology.owl")
+    parser.add_argument("--ontology", help="Path to OWL ontology", default="ontology/ontology.owl")
     parser.add_argument("--links", help="Path to links or sameAs(es)", default="output/movie_links.ttl")
     parser.add_argument("-q", "--query-file", help="Path to a file containing a SPARQL query", required=True)
     parser.add_argument("--target", choices=["local", "wikidata", "dbpedia"], default="local", help="Query target (default: local RDF graph)")
-    parser.add_argument("--no-reasoning", action="store_true", help="Skip OWL-RL inference")
+    parser.add_argument("--reasoning", action="store_true", help="Enable OWL-RL inference")
     args = parser.parse_args()
 
     with open(args.query_file, encoding="utf-8") as f:
@@ -75,7 +75,7 @@ def main():
         g.parse(args.ontology, format="turtle")
         g.parse(args.links, format="turtle")
 
-        if not args.no_reasoning:
+        if args.reasoning:
             start = time.time()
             DeductiveClosure(OWLRL_Semantics).expand(g)
             elapsed = time.time() - start

@@ -3,7 +3,7 @@
 ## Project scope
 
 This project builds Linked Open Data (LOD) for the movie domain using a Knowledge
-Graph. Refer to `README.MD` and `CONCEPT.MD` as the authoritative project-scope documents.
+Graph. Refer to `README.MD` and `docs/CONCEPT.MD` as the authoritative project-scope documents.
 
 The planned technology and data stack is:
 
