@@ -1,5 +1,16 @@
+# env
 .vscode/
-__pycache__
 .env
-.env.*
-!.env.example
+
+# cache
+__pycache__
+
+# latex
+report/*.aux
+report/*.fdb_latexmk
+report/*.fls
+report/*.log
+report/*.out
+report/*.synctex.gz
+report/*.bbl
+report/*.blg

@@ -2,9 +2,12 @@ import csv
 import os
 
 import requests
+from dotenv import load_dotenv
 
-API_KEY = os.getenv("TMDB_API_KEY")
-if not API_KEY:
+load_dotenv()
+
+TMDB_API_KEY = os.getenv("TMDB_API_KEY")
+if not TMDB_API_KEY:
     raise RuntimeError("Set the TMDB_API_KEY environment variable before running this script.")
 BASE_URL = "https://api.themoviedb.org/3"
 
@@ -27,15 +30,15 @@ crew_rows = []          # movie_id, person_id, person_name, job
 
 for page in PAGES:
     print(f"🟠 Requesting for {BASE_URL}/movie/popular (page {page}) ...")
-    resp = requests.get(f"{BASE_URL}/movie/popular", params={"api_key": API_KEY, "page": page}, timeout=10)
+    resp = requests.get(f"{BASE_URL}/movie/popular", params={"api_key": TMDB_API_KEY, "page": page}, timeout=10)
     results = resp.json()["results"]
     print("🟢 Success")
 
     print("🟠 Retrieving information ...")
     for m in results:
         movie_id = m["id"]
-        details = requests.get(f"{BASE_URL}/movie/{movie_id}", params={"api_key": API_KEY}, timeout=10).json()
-        credits = requests.get(f"{BASE_URL}/movie/{movie_id}/credits", params={"api_key": API_KEY}, timeout=10).json()
+        details = requests.get(f"{BASE_URL}/movie/{movie_id}", params={"api_key": TMDB_API_KEY}, timeout=10).json()
+        credits = requests.get(f"{BASE_URL}/movie/{movie_id}/credits", params={"api_key": TMDB_API_KEY}, timeout=10).json()
 
         movies.append({
             "id": movie_id,

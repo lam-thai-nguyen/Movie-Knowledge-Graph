@@ -1,9 +1,5 @@
 # Linked Open Data Application using Movie Knowledge Graph
 
-## Conceptualization
-
-Refer to [concept.MD](concept.MD)
-
 ## Set up environment
 
 Use miniconda to set up the environment as follows:
@@ -14,30 +10,24 @@ conda activate semantic-web
 pip install -r requirements.txt
 ```
 
-I use Windows 11 btw!
-
 ## Collect data from TMDB
 
-Get an API Key from https://www.themoviedb.org/, then store it as an environment variable. On Windows Powershell, run:
-
-```powershell
-$env:TMDB_API_KEY = "your-tmdb-api-key"
-```
-
-To collect the data, run:
+To crawl the data from https://www.themoviedb.org/,
+create an account, get your API Key, store it in `.env`,
+run:
 
 ```bash
-python tmdb.py
+python3 tmdb.py
 ```
 
-The generated files include `movies.csv`, `cast.csv`, `crew.csv`, entity lookup files such as `genres.csv` and `companies.csv`, and relationship files such as `movie_genres.csv` and `movie_companies.csv`.
+Output: The generated files include `movies.csv`, `cast.csv`, `crew.csv`, entity lookup files such as `genres.csv` and `companies.csv`, and relationship files such as `movie_genres.csv` and `movie_companies.csv`.
 
 ## Transform CSV data into RDF
 
 To transform table data into RDF triples (Turtle notation), run:
 
 ```bash
-python transform.py
+python3 transform.py
 ```
 
 Output: `output/movies.ttl`
@@ -63,7 +53,7 @@ Linking mechanism:
 To start linking the Movie KG to Wikidata and DBpedia, run:
 
 ```bash
-python link_movies.py
+python3 link_movies.py
 ```
 
 Output:
@@ -75,11 +65,11 @@ Output:
 After generating `output/movies.ttl` and building `./ontology.owl`, you can run a SPARQL query from the provided example `queries/`
 
 ```bash
-python ask.py -q "queries/1.sparql" --no-reasoning  # for Q1 -> Q10
-python ask.py -q "queries/11.sparql"  # for Q11 -> Q14
-python ask.py --rdf "output/inferred_graph.ttl" -q "queries/11.sparql" --no-reasoning  # for Q11 -> Q14 (faster)
-python ask.py -q "queries/15.sparql" --target dbpedia --no-reasoning  # for DBpedia remote querying
-python ask.py -q "queries/15.sparql" --target wikidata --no-reasoning  # for Wikidata remote querying
+python3 ask.py -q "queries/1.sparql" --no-reasoning  # for Q1 -> Q10
+python3 ask.py -q "queries/11.sparql"  # for Q11 -> Q14
+python3 ask.py --rdf "output/inferred_graph.ttl" -q "queries/11.sparql" --no-reasoning  # for Q11 -> Q14 (faster)
+python3 ask.py -q "queries/15.sparql" --target dbpedia --no-reasoning  # for DBpedia remote querying
+python3 ask.py -q "queries/15.sparql" --target wikidata --no-reasoning  # for Wikidata remote querying
 ```
 
 ⚠️ Known issue: Wikidata rate limit is expected.

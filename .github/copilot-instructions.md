@@ -3,8 +3,7 @@
 ## Project scope
 
 This project builds Linked Open Data (LOD) for the movie domain using a Knowledge
-Graph. Refer to [README.MD](../README.MD) and [concept.MD](../concept.MD) as the
-authoritative project-scope documents.
+Graph. Refer to `README.MD` and `CONCEPT.MD` as the authoritative project-scope documents.
 
 The planned technology and data stack is:
 
@@ -18,37 +17,13 @@ The planned technology and data stack is:
   five-star Linked Open Data standard.
 - **Query interface:** Provide the data through a SPARQL endpoint using Apache
   Jena Fuseki.
-- **Environment:** Use the Python interpreter from the `semantic-web` Conda
-  environment and the dependencies from `requirements.txt`, as documented in
-  `README.MD`.
-
-When making implementation decisions, preserve semantic-web interoperability,
-valid RDF, consistent URI design, reuse of established vocabularies, and
-compatibility with SPARQL/Fuseki.
+- **Environment:** Use the Python interpreter as 
+`/home/thai/miniconda3/envs/semantic-web/bin/python3`.
+Use pip as `/home/thai/miniconda3/envs/semantic-web/bin/pip3`.
+Initial environment setup by `pip3 install -r requirements.txt`
+Install additional packages by `pip3 install`. 
+Remember to `pip3 freeze > requirements.txt` after installing packages.
 
 ## Response formatting
 
-- Start every answer with `🟠🟠🟠`.
-- When summarizing changes made, start that paragraph or section with `🟢🟢🟢`.
-- When proposing next steps, start that paragraph or section with `🟡🟡🟡`.
-- Keep responses concise, explicit about uncertainty, and grounded in the project
-  scope described by `README.MD` and `concept.MD`.
-
-## Change workflow
-
-For any requested change:
-
-1. Inspect the relevant files and confirm how the change fits the project scope.
-2. Propose the intended changes, including important implementation choices,
-   affected files, and validation steps.
-3. Ask the user for permission before making the change when the request is
-   exploratory, ambiguous, or does not explicitly authorize implementation.
-4. Execute the change only after permission is granted, or immediately when the
-   user has explicitly requested implementation.
-5. Validate the result with the smallest relevant project checks.
-6. Summarize the changes made, beginning with `🟢🟢🟢`.
-7. Propose relevant next steps based on `concept.MD`, beginning with `🟡🟡🟡`.
-
-Do not make unrelated changes. Preserve existing user work, follow repository
-conventions, and update directly related documentation when behavior or setup
-changes.
+Start every answer after a line of `====================`.
