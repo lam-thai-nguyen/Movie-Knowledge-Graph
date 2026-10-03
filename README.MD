@@ -63,7 +63,7 @@ python3 scripts/link_movies.py
 
 Output:
 - `output/movie_links.ttl` - automatically approved entities
-- `output/movie_candidates.csv` - rejectes and need-review entities (for manual review and appending to the movie_links.ttl file)
+- `output/movie_candidates.csv` - rejects and need-review entities (for manual review and appending to the movie_links.ttl file)
 
 ## Query the Knowledge Graph via CLI
 
