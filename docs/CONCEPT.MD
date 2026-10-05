@@ -61,3 +61,7 @@ Reusing classes and properties from https://schema.org/.
 ## 6) Provide an interface via SPARQL endpoint to query the data
 
 - Set up a SPARQL endpoint via Apache Jena Fuseki
+
+## 7) (Optional) Create a static web to view the data
+
+- Deploy a static web to GitHub Pages in the style of DBpedia
