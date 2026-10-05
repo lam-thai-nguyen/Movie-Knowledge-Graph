@@ -1,3 +1,149 @@
-% Discuss the OWL ontology, OWL-RL reasoning, inferred knowledge, and entity
-% linking with DBpedia and Wikidata.
-\section{Ontology constructing and Entity linking}\label{sec:onto}
+\section{Ontology construction and entity linking}\label{sec:onto}
+
+\subsection{Ontology construction}
+
+The ontology provides the semantic layer of the movie knowledge graph. It is
+written by reusing Schema.org terms and adding OWL axioms that describe the
+intended meaning of movie entities and their relationships. The design covers
+movies, people, genres, production organizations, countries, languages,
+ratings, and reified acting roles. In addition to naming classes and
+properties, the ontology specifies domains, ranges, inverse relationships,
+property chains, and cardinality constraints. These axioms support validation
+of the graph and inference over relationships that are not explicitly stored.
+
+Table~\ref{tab:ontology-excerpts} presents four representative excerpts from
+the ontology. The first row defines \texttt{schema:Movie} as a class
+specialized from \texttt{schema:CreativeWork}. The second row shows a
+datatype property, \texttt{schema:datePublished}, whose values must be
+dates. The third row shows the object property
+\texttt{schema:director}, which connects a movie resource to a person
+resource. The final row illustrates a restriction requiring every movie to
+have at least one name. Together, these examples show that the ontology
+describes both the vocabulary of the graph and constraints on its data.
+
+\begin{table}[t]
+    \centering
+    \caption{Representative excerpts from the movie ontology.}
+    \label{tab:ontology-excerpts}
+    \small
+    \begin{tabular}{p{0.18\linewidth}p{0.38\linewidth}p{0.34\linewidth}}
+        \toprule
+        \textbf{Element} & \textbf{OWL excerpt} & \textbf{Role in the graph} \\
+        \midrule
+        Class &
+        \texttt{schema:Movie a owl:Class;} \newline
+        \texttt{\quad rdfs:subClassOf schema:CreativeWork .}
+        &
+        Identifies movie resources and places them under the
+        Schema.org creative-work hierarchy. \\
+        \midrule
+        Datatype property &
+        \texttt{schema:datePublished a owl:DatatypeProperty;} \newline
+        \texttt{\quad rdfs:domain schema:Movie;} \newline
+        \texttt{\quad rdfs:range xsd:date .}
+        &
+        Represents a movie release date and constrains its value to
+        \texttt{xsd:date}. \\
+        \midrule
+        Object property &
+        \texttt{schema:director a owl:ObjectProperty;} \newline
+        \texttt{\quad rdfs:domain schema:Movie;} \newline
+        \texttt{\quad rdfs:range schema:Person .}
+        &
+        Links a movie to a person who directed it. \\
+        \midrule
+        Restriction &
+        \texttt{schema:Movie rdfs:subClassOf} \newline
+        \texttt{\quad [a owl:Restriction;} \newline
+        \texttt{\quad\quad owl:onProperty schema:name;} \newline
+        \texttt{\quad\quad owl:minCardinality 1].}
+        &
+        Requires every movie to have at least one name. \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The ontology also defines the inverse property
+\texttt{kg:directedMovie} for retrieving movies from a director and a
+property chain that derives a movie's production country from its production
+company. Disjointness axioms distinguish entity categories such as movies,
+people, and organizations, while restrictions on ratings and acting roles
+limit ambiguous or incomplete representations. These modelling decisions
+make the graph suitable for semantic querying rather than simple metadata
+lookup.
+
+\subsection{Entity linking}
+
+Entity linking connects local movie resources to equivalent resources in
+Wikidata and DBpedia. Candidate entities are first searched using TMDB and
+IMDb identifiers. When identifier-based search does not produce a candidate,
+the movie title and release year are used. Each candidate is then compared
+with the local record. An identifier match combined with a matching release
+year receives the highest score, while a release-year mismatch is rejected.
+Candidates with incomplete or weaker evidence are retained for manual review.
+
+Table~\ref{tab:linking-scores} gives three representative outcomes from the
+candidate-matching process. The accepted example, Spider-Man: Brand New
+Day, matches both identifiers and the release year, producing a score of
+1.00. The rejected candidate for The Furious has matching identifiers but
+a conflicting release year, so it receives a score of 0.00. The The Fix
+candidate has matching identifiers but no comparison release year and is
+therefore assigned a score of 0.50 and marked for review. The table
+illustrates why the score is used together with explicit matching evidence
+and a status rather than being treated as an unqualified identity claim.
+
+\begin{table}[t]
+    \centering
+    \caption{Examples of candidate scoring and linking decisions.}
+    \label{tab:linking-scores}
+    \small
+    \begin{tabular}{p{0.22\linewidth}p{0.16\linewidth}p{0.25\linewidth}p{0.08\linewidth}p{0.09\linewidth}}
+        \toprule
+        \textbf{Movie} & \textbf{Matched by} & \textbf{Evidence} &
+        \textbf{Score} & \textbf{Status} \\
+        \midrule
+        Spider-Man: Brand New Day &
+        Identifier search &
+        TMDB + IMDb + release year &
+        1.00 & Approved \\
+        The Furious &
+        Identifier search &
+        TMDB + IMDb; release-year mismatch &
+        0.00 & Rejected \\
+        The Fix &
+        Identifier search &
+        TMDB + IMDb; release year missing &
+        0.50 & Review \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Only approved candidates are materialized as external links. The resulting
+links use \texttt{owl:sameAs}, asserting that the local URI and the external
+resource identify the same movie. Table~\ref{tab:linking-output} shows a
+qualitative excerpt for Spider-Man: Brand New Day. One local resource is
+linked to both a Wikidata entity and a DBpedia resource, allowing subsequent
+queries to follow either link to complementary linked-data sources. The
+excerpt also demonstrates that the local URI remains the stable identifier
+within the project, while the external URIs preserve the identity of the
+corresponding resources.
+
+\begin{table}[t]
+    \centering
+    \caption{Excerpt of the generated external entity links.}
+    \label{tab:linking-output}
+    \small
+    \begin{tabular}{p{0.94\linewidth}}
+        \toprule
+        \texttt{<https://example.org/movie/969681>} \newline
+        \texttt{\quad owl:sameAs} \newline
+        \texttt{\quad\quad <http://dbpedia.org/resource/Spider-Man:\_Brand\_New\_Day>,} \newline
+        \texttt{\quad\quad <http://www.wikidata.org/entity/Q113244935> .} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+This linking stage extends the locally generated RDF graph with
+cross-dataset identity links. It therefore supports federated exploration
+and five-star Linked Open Data principles while keeping uncertain matches
+separate from automatically approved assertions.
