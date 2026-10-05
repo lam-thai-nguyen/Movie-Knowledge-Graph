@@ -116,3 +116,20 @@ Go to `localhost:3030` via your browser. In the Fuseki UI, create a new dataset,
 ![Fuseki web interface](docs/fuseki.gif)
 
 ⚠️ Fuseki doesn't have a reasoner by default, so load an inferred graph (like `output/inferred_graph_clean.ttl`) instead of the raw RDF file (like `output/movies.ttl`).
+
+## Build and deploy the static knowledge-graph browser
+
+The project includes a DBpedia-style static browser. It pre-generates resource
+pages, an ontology browser, search data, and RDF/OWL downloads from the inferred
+graph:
+
+```bash
+python3 scripts/build_site.py
+```
+
+The generated `_site/` directory is deployed automatically to GitHub Pages by
+`.github/workflows/pages.yml`. Project-owned resource URIs are published under
+`https://lam-thai-nguyen.github.io/Movie-Knowledge-Graph/resource/`; external
+DBpedia, Wikidata, TMDB, IMDb, Schema.org, and RDF vocabulary URIs are left
+unchanged. The source `example.org` RDF files remain available for local
+reasoning and reproducible data generation.
