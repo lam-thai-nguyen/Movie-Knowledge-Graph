@@ -108,7 +108,7 @@ Visit https://jena.apache.org/download/, download a file called `apache-jena-fus
 ```powershell
 java --version  # Java 17+ is required
 cd "<absolute path>"
-fuseki-server
+./fuseki-server
 ```
 
 Go to `localhost:3030` via your browser. In the Fuseki UI, create a new dataset, upload dataset, and start querying.
