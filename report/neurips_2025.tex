@@ -3,7 +3,7 @@
 \usepackage[preprint]{neurips_2025}
 \usepackage[utf8]{inputenc} % allow utf-8 input
 \usepackage[T1]{fontenc}    % use 8-bit T1 fonts
-\usepackage{hyperref}       % hyperlinks
+\usepackage[hidelinks]{hyperref}       % hyperlinks
 \usepackage{url}            % simple URL typesetting
 \usepackage{booktabs}       % professional-quality tables
 \usepackage{amsfonts}       % blackboard math symbols
@@ -11,10 +11,7 @@
 \usepackage{microtype}      % microtypography
 \usepackage{xcolor}         % colors
 
-% Note. For the workshop paper template, both \title{} and \workshoptitle{} are required, with the former indicating the paper title shown in the title and the latter indicating the workshop title displayed in the footnote. 
-\title{Formatting Instructions For NeurIPS 2025}
-
-
+\title{Linked Open Data Application\\for Movie Knowledge Graph}
 
 \author{%
   Nguyen Lam Thai \\
@@ -41,11 +38,18 @@
 \maketitle
 
 
-\begin{abstract}
-    tbd
-\end{abstract}
+\input{sections/0_abstract.tex}
+\input{sections/1_introduction.tex}
+\input{sections/2_methodology.tex}
+\input{sections/3_data_collection_and_transformation.tex}
+\input{sections/4_ontology_and_entity_linking.tex}
+\input{sections/5_querying_and_system_implementation.tex}
+\input{sections/6_evaluation.tex}
+\input{sections/7_limitations_and_future_improvements.tex}
+\input{sections/8_conclusion.tex}
 
-
-
+\small
+\bibliographystyle{plainnat}
+\bibliography{ref}
 
 \end{document}
