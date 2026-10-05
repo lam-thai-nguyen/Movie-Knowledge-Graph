@@ -1,5 +1,10 @@
 \section{Evaluation}\label{sec:eval}
 
+We first evaluate the graph using CLI commands, then deploy it through an
+Apache Jena Fuseki SPARQL endpoint for a qualitative evaluation, because
+Fuseki does not enable an OWL reasoner by default for the reasoning queries
+used here.
+
 The knowledge graph is evaluated through representative SPARQL queries
 designed to demonstrate increasing expressiveness. The query collection is
 organized into four categories: basic retrieval, structured filtering and
@@ -18,7 +23,7 @@ Table~\ref{tab:eval-basic} shows the first five returned records. These
 results demonstrate that the graph can provide a simple catalogue view while
 preserving stable resource identifiers for subsequent queries.
 
-\begin{table}[t]
+\begin{table}[!htbp]
     \centering
     \caption{SPARQL query for basic movie retrieval.}
     \label{tab:sparql-basic}
@@ -35,7 +40,7 @@ preserving stable resource identifiers for subsequent queries.
     \end{tabular}
 \end{table}
 
-\begin{table}[t]
+\begin{table}[!htbp]
     \centering
     \caption{Representative results for basic movie retrieval.}
     \label{tab:eval-basic}
@@ -65,7 +70,7 @@ basic retrieval query, this query traverses movie--genre, movie--role--actor, an
 movie--rating relationships simultaneously, while also applying date and
 value conditions.
 
-\begin{table}[t]
+\begin{table}[!htbp]
     \centering
     \caption{SPARQL query for multi-condition filtering and ranking.}
     \label{tab:sparql-structured}
@@ -88,7 +93,7 @@ value conditions.
     \end{tabular}
 \end{table}
 
-\begin{table}[t]
+\begin{table}[!htbp]
     \centering
     \caption{Results for multi-condition filtering and ranking.}
     \label{tab:eval-structured}
@@ -121,7 +126,7 @@ Table~\ref{tab:eval-reasoning} identifies the United States of America,
 although the query does not directly use the movie's country-of-origin
 property.
 
-\begin{table}[t]
+\begin{table}[!htbp]
     \centering
     \caption{SPARQL query using an inferred production-country relation.}
     \label{tab:sparql-reasoning}
@@ -139,7 +144,7 @@ property.
     \end{tabular}
 \end{table}
 
-\begin{table}[t]
+\begin{table}[!htbp]
     \centering
     \caption{Result of an OWL-RL reasoning-based query.}
     \label{tab:eval-reasoning}
@@ -171,7 +176,7 @@ Table~\ref{tab:eval-external} shows selected results that complement the
 local graph, including the film type, director, production company, budget,
 and a starring actor.
 
-\begin{table}[t]
+\begin{table}[!htbp]
     \centering
     \caption{SPARQL query for retrieving linked external information.}
     \label{tab:sparql-external}
@@ -188,7 +193,7 @@ and a starring actor.
     \end{tabular}
 \end{table}
 
-\begin{table}[t]
+\begin{table}[!htbp]
     \centering
     \caption{Selected information retrieved from DBpedia for ``The Odyssey''.}
     \label{tab:eval-external}
@@ -214,3 +219,18 @@ Taken together, the four query categories show a progression from direct
 lookup to graph traversal, inference, and linked-data integration. They
 demonstrate the practical expressiveness of the constructed knowledge graph
 without interpreting the difficulty labels as formal research metrics.
+
+\subsection{Fuseki SPARQL endpoint}
+
+Figure~\ref{fig:fuseki-endpoint} provides a qualitative view of the deployed
+Fuseki interface. It shows a SPARQL query submitted to the local endpoint and
+the returned triples displayed in tabular form, demonstrating that the
+generated knowledge graph is accessible through a browser-based SPARQL
+service after the CLI-based evaluation.
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=\linewidth]{images/fuseki.png}
+    \caption{Qualitative result from the Apache Jena Fuseki SPARQL endpoint.}
+    \label{fig:fuseki-endpoint}
+\end{figure}

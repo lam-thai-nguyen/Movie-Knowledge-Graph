@@ -1,1 +1,21 @@
 \section{Conclusion}\label{sec:conclusion}
+
+This work presented a Linked Open Data application for constructing and
+querying a movie knowledge graph. Movie metadata and credit relationships
+were collected from TMDB, transformed into RDF using stable URIs, and
+modelled with Schema.org vocabulary. A manually authored OWL ontology added
+domains, ranges, restrictions, inverse properties, and property chains for
+semantic interpretation and inference. The graph was further connected to
+DBpedia and Wikidata through identity links based on movie identifiers and
+supporting metadata.
+
+The evaluation showed that the resulting graph supports progressively more
+expressive questions, from basic movie retrieval to multi-condition ranking,
+reasoning-based relationship discovery, and access to information in external
+knowledge graphs. These results demonstrate the value of representing movies,
+people, roles, ratings, and production entities as interconnected resources
+rather than as isolated tabular records. Although the current dataset is a
+bounded snapshot and linking and remote-query reliability remain limitations,
+the system provides a practical foundation for extending the collection,
+improving validation and entity review, and publishing the graph through a
+SPARQL endpoint and browser-based interface.

@@ -1,3 +1,34 @@
 \section{Discussion}\label{sec:discussion}
+
+The completed knowledge graph demonstrates that RDF and OWL provide a
+useful representation for combining movie metadata, relationships, inferred
+facts, and links to external datasets. The evaluation shows a progression
+from simple catalogue retrieval to multi-condition selection, ontology-based
+inference, and cross-knowledge-graph exploration. This expressiveness is a
+result of modelling entities and relationships explicitly rather than
+storing each movie as an isolated record. In particular, the ontology allows
+queries to use derived relationships, while \texttt{owl:sameAs} links extend
+the information available for locally represented movies.
+
 \paragraph{Limitations}
+The dataset is a bounded snapshot of approximately 100 popular movies, so
+the results should not be interpreted as representative of the complete
+TMDB catalogue. Only the first ten cast members are retained for each movie,
+which limits queries involving less prominent actors. The graph also depends
+on the completeness and consistency of the source metadata. Entity linking
+reduces this problem by separating approved links from rejected and
+review-required candidates, but automatically accepted matches cannot
+eliminate all ambiguity. In addition, OWL-RL reasoning increases query
+processing time, and remote DBpedia or Wikidata queries depend on external
+availability and rate limits.
+
 \paragraph{Future work}
+Future development could enlarge the collection and refresh it
+incrementally, while retaining provenance and collection timestamps.
+Additional validation rules could detect missing or inconsistent values
+before RDF generation, and a review interface could help resolve uncertain
+entity links. Query evaluation could also be extended with larger benchmark
+sets, execution-time measurements, and comparisons between asserted and
+inferred graphs. Finally, publishing the inferred graph through Fuseki and
+the static browser would make the knowledge graph easier to explore and
+support reproducible access beyond the command-line examples.
