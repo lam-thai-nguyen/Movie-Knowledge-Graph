@@ -1,1 +1,86 @@
 \section{Methodology}\label{sec:method}
+Figure~\ref{fig:overview-proposed-method} summarizes the proposed pipeline for
+constructing and exposing a movie knowledge graph. Movie data are collected from TMDB and stored in CSV
+files. These tabular records are transformed into Turtle RDF using stable
+resource URIs. The OWL ontology then adds class, property, and restriction
+semantics and supports OWL-RL inference. Movie entities are linked to DBpedia
+and Wikidata using identifiers, titles, release years, and related matching
+criteria. Apache Jena Fuseki provides a browser-accessible SPARQL endpoint for
+querying the graph. The optional static web application publishes generated
+resource pages and ontology views for human browsing.
+
+Here, we describe the first step of the workflow
+(i.e., defining the ontology for the movie domain) and specify the evaluation protocol,
+which assesses the resulting knowledge graph by executing representative SPARQL queries. The
+remaining stages are described in their corresponding sections.
+
+\paragraph{Movie ontology}
+
+We construct the movie ontology by reusing Schema.org classes and properties
+to represent movies and their related entities. Table~\ref{tab:schema-vocabulary}
+lists all Schema.org terms used in the ontology~\citep{schemaorg2025}. The classes model movies,
+people, roles, descriptive entities, organizations, and ratings, while the
+properties describe movie metadata and relationships, including titles,
+identifiers, release dates, duration, genres, languages, countries, production
+companies, ratings, directors, actors, and acting roles. This vocabulary
+provides a shared semantic model while allowing the data to be serialized as
+RDF and constrained or extended with OWL.
+
+\paragraph{Evaluation protocol}
+
+The evaluation protocol queries the graph using SPARQL. The query set covers
+basic retrieval, such as listing movies, people, and directors, as well as
+multi-condition questions involving ratings, genres, release years, and cast
+members. Additional queries test the value of OWL-RL reasoning by asking for
+inferred relationships, such as a person's directed movies or a production
+company's country. Finally, federated queries retrieve information about a
+movie from DBpedia or Wikidata through its established links. Queries are
+executed against the local graph, with reasoning enabled when required, and
+against the corresponding remote endpoint for external-source questions.
+
+\begin{table}[t]
+    \centering
+    \caption{Schema.org classes and properties reused in the movie ontology.}
+    \label{tab:schema-vocabulary}
+    \small
+    \begin{tabular}{p{0.22\linewidth}p{0.70\linewidth}}
+        \toprule
+        \textbf{Category} & \textbf{Schema.org terms and use} \\
+        \midrule
+        Classes &
+        \texttt{Movie} (movie); \texttt{CreativeWork} (movie superclass);
+        \texttt{Person} (actor, director, or crew member);
+        \texttt{Role} (reified acting role); \texttt{Genre} (movie genre);
+        \texttt{Country} (movie or company country);
+        \texttt{Language} (movie language);
+        \texttt{Organization} (production company);
+        \texttt{AggregateRating} (movie rating);
+        \texttt{Rating}, \texttt{Thing}, and \texttt{Intangible}
+        (reused superclasses). \\
+        \midrule
+        Object properties &
+        \texttt{actor} (movie or role to actor);
+        \texttt{aggregateRating} (movie to rating);
+        \texttt{contributor} (movie to non-director crew member);
+        \texttt{countryOfOrigin} (movie to country);
+        \texttt{director} (movie to director);
+        \texttt{genre} (movie to genre);
+        \texttt{inLanguage} (movie to language);
+        \texttt{location} (company to country);
+        \texttt{productionCompany} (movie to company);
+        \texttt{sameAs} (movie to an equivalent external resource). \\
+        \midrule
+        Datatype properties &
+        \texttt{abstract} (movie synopsis);
+        \texttt{characterName} (character portrayed in a role);
+        \texttt{datePublished} (release date);
+        \texttt{duration} (runtime);
+        \texttt{identifier} (TMDB or IMDb identifier);
+        \texttt{name} (entity name);
+        \texttt{position} (cast order);
+        \texttt{ratingCount} (number of votes);
+        \texttt{ratingValue} (rating value);
+        \texttt{roleName} (crew job title). \\
+        \bottomrule
+    \end{tabular}
+\end{table}
