@@ -1,1 +1,137 @@
 \section{Data collection and transformation}\label{sec:data}
+\subsection{Data collection}
+
+The movie dataset is collected from TMDB, a public
+source of movie metadata. The collection focuses on the first five pages of
+TMDB's popular-movie listing, which return 100 movies in total. 
+For each listed movie, detailed metadata and
+credit information are retrieved. This produces a bounded snapshot of the
+popular-movie catalogue rather than a complete crawl of TMDB.
+
+The collected movie attributes include the TMDB and IMDb identifiers, title,
+synopsis, original language, release date, runtime, average vote, and vote
+count. The collection also records related entities: genres, production
+companies, production countries, spoken languages, cast members, and
+directors. Cast records retain the first ten credited actors, their character
+names, and their order in the cast. Crew records retain directors and their
+person identifiers. This selection prioritizes the information needed for
+movie retrieval, recommendation-style queries, and relationship queries over
+the entire credit list.
+
+The result is organized as entity tables and relationship tables, under the CSV format. Entity
+tables store one row per movie, genre, company, country, language, or person
+reference, while relationship tables preserve many-to-many associations such
+as movie--genre and movie--production-company links. This separation avoids
+repeating descriptive values and provides a convenient intermediate
+representation for RDF generation. Text values are trimmed, missing values
+are represented as empty fields, and all files are written using UTF-8
+encoding.
+
+Table~\ref{tab:tmdb-data-structure} summarizes this organization. The first
+row contains the central movie records, the second covers reusable
+descriptive entities, and the third captures the available credit
+information. The final row distinguishes relationship records from entity
+records; these links are later converted into RDF predicates between stable
+resources.
+
+\begin{table}[t]
+    \centering
+    \caption{Structure of the collected movie data.}
+    \label{tab:tmdb-data-structure}
+    \small
+    \begin{tabular}{p{0.25\linewidth}p{0.63\linewidth}}
+        \toprule
+        \textbf{Data group} & \textbf{Information represented} \\
+        \midrule
+        Movie metadata &
+        Identifiers, title, synopsis, language, release date, runtime, and
+        rating information. \\
+        Descriptive entities &
+        Genres, production companies, production countries, and spoken
+        languages. \\
+        Credits &
+        Cast members, character names, cast order, directors, and person
+        identifiers. \\
+        Relationships &
+        Movie-to-genre, movie-to-company, movie-to-country, and
+        movie-to-language associations. \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+This organization also makes the limitations of the snapshot explicit.
+Movies can occur more than once in the popular-movie results, and the
+available metadata depends on the completeness of the source records. In
+addition, restricting the cast to ten entries reduces the size of the graph
+but does not represent the full cast of every movie.
+
+\subsection{Data transformation}
+
+The tabular data are transformed into an RDF graph using Schema.org
+vocabulary. Each identified entity receives a stable URI composed of a
+project base URI, an entity type, and its source identifier. For example,
+movie, person, genre, company, country, and language resources are separated
+by their respective URI paths. This URI design preserves the identity of
+entities across files and enables relationships to be represented as links
+between resources rather than duplicated text values.
+
+Movies are represented as instances of \texttt{schema:Movie}. Their
+descriptive fields are mapped to properties such as
+\texttt{schema:name}, \texttt{schema:abstract},
+\texttt{schema:datePublished}, and \texttt{schema:duration}. Related
+entities are represented as typed resources: genres as
+\texttt{schema:Genre}, people as \texttt{schema:Person}, production
+companies as \texttt{schema:Organization}, countries as
+\texttt{schema:Country}, and languages as \texttt{schema:Language}.
+Relationship tables consequently become graph edges such as
+\texttt{schema:genre}, \texttt{schema:productionCompany},
+\texttt{schema:countryOfOrigin}, and \texttt{schema:inLanguage}.
+
+Values are assigned RDF datatypes where appropriate. Release dates use
+\texttt{xsd:date}, runtimes are represented as \texttt{xsd:duration}, rating
+values use \texttt{xsd:decimal}, and vote counts and cast positions use
+\texttt{xsd:integer}. Empty source values are omitted instead of being
+emitted as empty literals. Ratings are represented by an anonymous
+\texttt{schema:AggregateRating} resource so that the rating value and vote
+count remain grouped. Similarly, actor information is reified as
+\texttt{schema:Role} resources when character names or cast positions are
+available.
+
+\begin{table}[t]
+    \centering
+    \caption{Qualitative RDF snapshot for ``Spider-Man: Brand New Day''.}
+    \label{tab:rdf-snapshot}
+    \small
+    \begin{tabular}{p{0.94\linewidth}}
+        \toprule
+        \texttt{<https://example.org/movie/969681> a schema:Movie ;} \\
+        \texttt{\quad schema:name "Spider-Man: Brand New Day" ;} \\
+        \texttt{\quad schema:datePublished "2026-07-29"\string^\string^xsd:date ;} \\
+        \texttt{\quad schema:duration "PT2H25M"\string^\string^xsd:duration ;} \\
+        \texttt{\quad schema:aggregateRating [ a schema:AggregateRating ;} \\
+        \texttt{\quad\quad schema:ratingCount 2795 ;} \\
+        \texttt{\quad\quad schema:ratingValue 7.86 ] ;} \\
+        \texttt{\quad schema:genre <https://example.org/genre/12>,} \\
+        \texttt{\quad\quad\quad\quad <https://example.org/genre/28>,} \\
+        \texttt{\quad\quad\quad\quad <https://example.org/genre/878> ;} \\
+        \texttt{\quad schema:director <https://example.org/person/1144604> ;} \\
+        \texttt{\quad schema:sameAs <https://www.themoviedb.org/movie/969681>,} \\
+        \texttt{\quad\quad\quad\quad <https://www.imdb.com/title/tt22084616/> .} \\
+        \midrule
+        \texttt{<https://example.org/movie/969681>} \\
+        \texttt{\quad schema:actor [ a schema:Role ;} \\
+        \texttt{\quad\quad schema:actor <https://example.org/person/1136406> ;} \\
+        \texttt{\quad\quad schema:characterName "Peter Parker / Spider-Man" ;} \\
+        \texttt{\quad\quad schema:position 0 ] .} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Table~\ref{tab:rdf-snapshot} is a qualitative example rather than a complete
+listing of the resource. The first group of statements describes the movie
+itself and demonstrates how dates, durations, and ratings are typed. The
+genre and director objects are URI links to other resources in the graph,
+whereas the \texttt{schema:sameAs} objects link the local resource to its
+TMDB and IMDb counterparts. The final group shows why a role resource is
+useful: it preserves both the actor identity and the character name while
+also retaining the cast position.
