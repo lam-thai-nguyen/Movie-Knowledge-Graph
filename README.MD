@@ -1,5 +1,7 @@
 # Linked Open Data Application using Movie Knowledge Graph
 
+[[Demo video]](video/video.mp4)
+
 ## Set up environment
 
 Use miniconda to set up the environment as follows:
