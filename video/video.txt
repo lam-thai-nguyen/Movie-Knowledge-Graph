@@ -1,0 +1,31 @@
+Assumption: You have git cloned the repository and have created the correct environment. You have a TMDB API Key in your `.env` file. You have downloaded Apache Jena Fuseki.
+
+LET'S START
+
+Step 1: Define an ontology for the selected domain (Movie)
+- We reuse the ontology of Schema.org
+
+Step 2: Collect relevant data in this domain
+- Run `python3 scripts/tmdb.py`
+- We scrape the data from TMDB (first 5 pages = 100 movies)
+- It will take a while so I will skip this.
+- Output: CSV files in `data/`
+
+Step 3: Transform collected data into 4* standard
+- Run `python3 scripts/transform.py`
+- We have 11K triples for 100 movies
+- Output: `movies.ttl` in `output/`
+
+Step 4: Find and establish links to other datasets to obtain 5* standard
+- We manually write `ontology.owl`
+- Run `python3 scripts/link_movies.py`
+- This will be long so I will also skip it
+- Output: `movie_links.ttl` in `output/`
+- We link our entities with the same entities from DBpedia and Wikidata
+
+Step 5: Provide an interface to SPARQL querying
+- Via CLI: Run `python3 scripts/ask.py -q "queries/1.sparql"`
+- Via Fuseki Server: Run `./fuseki-server`
+- Add data and start qeurying
+
+DONE
